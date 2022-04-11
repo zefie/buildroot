@@ -15,6 +15,7 @@ COMPRESS=(
 	"usr/lib/engines-1.1/afalg.so"
 	"usr/lib/engines-1.1/capi.so"
 	"usr/lib/engines-1.1/padlock.so"
+	"usr/lib/openvpn/plugins/openvpn-plugin-down-root.so"
 
 	"bin/bash"
 	"usr/bin/nano"
