@@ -28,6 +28,13 @@ COMPRESSABLE=(
 	"./usr/bin/ssh"
 	"./usr/bin/ssh-keygen"
 	"./usr/sbin/sshd"
+	"./usr/sbin/mtd_debug"
+	"./usr/sbin/mtdinfo"
+	"./usr/sbin/mtdpart"
+	"./usr/sbin/nanddump"
+	"./usr/sbin/nandtest"
+	"./usr/sbin/nandwrite"
+	"./usr/sbin/mkfs.ubifs"
 
 	"./usr/bin/rsync"
 	"./usr/bin/rsync-ssl"
@@ -45,19 +52,27 @@ COMPRESSABLE=(
 )
 
 BASH_COMPLETIONS=(
-	$(echo ./usr/share/bash-completion/completions/lz{ma,op,4,4c})
-	$(echo ./usr/share/bash-completion/completions/{bzip2,gzip,xz,tar})
-	$(echo ./usr/share/bash-completion/completions/{strings,passwd,pgrep})
-	$(echo ./usr/share/bash-completion/completions/{insmod,modinfo,rmmod})
-	$(echo ./usr/share/bash-completion/completions/{htop,kill,killall})
-	$(echo ./usr/share/bash-completion/completions/{ping,ping6,arping,tcpdump})
-	$(echo ./usr/share/bash-completion/completions/{nc,route,hostname,rsync})
-	$(echo ./usr/share/bash-completion/completions/{openssl,curl})
-	$(echo ./usr/share/bash-completion/completions/ssh{-add,-keygen,})
-	$(echo ./usr/share/bash-completion/completions/iw{list,priv,config,spy})
-	$(echo ./usr/share/bash-completion/completions/ip{tables,calc,})
-	$(echo ./usr/share/bash-completion/completions/if{up,down})
+	"arp" "arping" "brctl" "bzip2" "chgrp" "chmod"
+	"chown" "cpio" "crontab" "curl" "dd" "ebtables"
+	"ether-wake" "find" "gdb" "gzip" "hd" "hostname"
+	"htop" "id" "ifdown" "ifup" "insmod" "ip" "ipcalc"
+	"iptables" "iwconfig" "iwlist" "iwpriv" "iwspy"
+	"kill" "killall" "lpq" "lpr" "lsusb" "lz4" "lz4c"
+	"lzma" "lzop" "man" "mktemp" "modinfo" "modprobe"
+	"nc" "nslookup" "openssl" "passwd" "patch" "perl"
+	"pgrep" "pidof" "ping" "ping6" "pkill" "printenv"
+	"pwd" "rmmod" "route" "rpm" "rsync" "scp" "sh"
+	"ssh" "ssh-add" "ssh-copy-id" "ssh-keygen" "strings"
+	"sysctl" "tar" "tcpdump" "timeout" "update-alternatives"
+	"watch" "wget" "xmllint" "xz"
 )
+
+BASH_COMPLETIONS_PATHS=()
+
+for bc in ${BASH_COMPLETIONS[@]}; do
+	BASH_COMPLETIONS_PATHS+=("./usr/share/bash-completion/completions/${bc}")
+done
+
 
 TEMP_DIRS=()
 
@@ -99,7 +114,7 @@ INCLUDE=(
 	"./usr/share/terminfo"
 	"./etc/ssh"
 
-	"${BASH_COMPLETIONS[@]}"
+	"${BASH_COMPLETIONS_PATHS[@]}"
 
 	"./etc/init.d/S50sshd"
 	"./etc/init.d/S60openvpn"
