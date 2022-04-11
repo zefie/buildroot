@@ -2,6 +2,14 @@ Note for TMOHS1:
   - this is for building executables that run on the existing firmware
   - don't try to boot any rootfs or kernel generated from this tool
   - only tested on my device, not responsible for damage to devices
+  - leave libssl.so.1.0.0 for stock apps:
+    - /usr/bin/omadm
+    - /usr/sbin/wpa_supplicant
+    - /usr/sbin/lightttpd
+    - /usr/sbin/miniupnpd
+  - does not overwrite any files (except symlink to libssl.so)
+  - updating these may be possible but the goal of this project
+    is to not overwrite system files, so that uninstallation is possible
 
 Setup:
   - make tmohs1_defconfig
