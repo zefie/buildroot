@@ -4,13 +4,61 @@
 #
 ################################################################################
 
-NCURSES_VERSION = 5.9
+NCURSES_VERSION = 6.1
 NCURSES_SITE = $(BR2_GNU_MIRROR)/ncurses
 NCURSES_INSTALL_STAGING = YES
 NCURSES_DEPENDENCIES = host-ncurses
 NCURSES_LICENSE = MIT with advertising clause
-NCURSES_LICENSE_FILES = README
-NCURSES_CONFIG_SCRIPTS = ncurses$(NCURSES_LIB_SUFFIX)$(NCURSES_ABI_VERSION)-config
+NCURSES_LICENSE_FILES = COPYING
+NCURSES_CPE_ID_VENDOR = gnu
+# Commit 4b21273d71d09 added upstream (security) patches up to 20200118
+NCURSES_IGNORE_CVES += CVE-2018-10754
+NCURSES_IGNORE_CVES += CVE-2018-19211
+NCURSES_IGNORE_CVES += CVE-2018-19217
+NCURSES_IGNORE_CVES += CVE-2019-17594
+NCURSES_IGNORE_CVES += CVE-2019-17595
+NCURSES_CONFIG_SCRIPTS = ncurses$(NCURSES_LIB_SUFFIX)6-config
+NCURSES_PATCH = \
+	$(addprefix https://invisible-mirror.net/archives/ncurses/$(NCURSES_VERSION)/, \
+		ncurses-6.1-20190609-patch.sh.bz2 \
+		ncurses-6.1-20190615.patch.gz \
+		ncurses-6.1-20190623.patch.gz \
+		ncurses-6.1-20190630.patch.gz \
+		ncurses-6.1-20190706.patch.gz \
+		ncurses-6.1-20190713.patch.gz \
+		ncurses-6.1-20190720.patch.gz \
+		ncurses-6.1-20190727.patch.gz \
+		ncurses-6.1-20190728.patch.gz \
+		ncurses-6.1-20190803.patch.gz \
+		ncurses-6.1-20190810.patch.gz \
+		ncurses-6.1-20190817.patch.gz \
+		ncurses-6.1-20190824.patch.gz \
+		ncurses-6.1-20190831.patch.gz \
+		ncurses-6.1-20190907.patch.gz \
+		ncurses-6.1-20190914.patch.gz \
+		ncurses-6.1-20190921.patch.gz \
+		ncurses-6.1-20190928.patch.gz \
+		ncurses-6.1-20191005.patch.gz \
+		ncurses-6.1-20191012.patch.gz \
+		ncurses-6.1-20191015.patch.gz \
+		ncurses-6.1-20191019.patch.gz \
+		ncurses-6.1-20191026.patch.gz \
+		ncurses-6.1-20191102.patch.gz \
+		ncurses-6.1-20191109.patch.gz \
+		ncurses-6.1-20191116.patch.gz \
+		ncurses-6.1-20191123.patch.gz \
+		ncurses-6.1-20191130.patch.gz \
+		ncurses-6.1-20191207.patch.gz \
+		ncurses-6.1-20191214.patch.gz \
+		ncurses-6.1-20191221.patch.gz \
+		ncurses-6.1-20191228.patch.gz \
+		ncurses-6.1-20200104.patch.gz \
+		ncurses-6.1-20200111.patch.gz \
+		ncurses-6.1-20200118.patch.gz \
+	)
+
+# ncurses-6.1-20191012.patch.gz
+NCURSES_IGNORE_CVES += CVE-2019-17594 CVE-2019-17595
 
 NCURSES_CONF_OPTS = \
 	--without-cxx \
@@ -25,13 +73,10 @@ NCURSES_CONF_OPTS = \
 	--enable-const \
 	--enable-overwrite \
 	--enable-pc-files \
+	--disable-stripping \
+	--with-pkg-config-libdir="/usr/lib/pkgconfig" \
 	$(if $(BR2_PACKAGE_NCURSES_TARGET_PROGS),,--without-progs) \
 	--without-manpages
-
-# Install after busybox for the full-blown versions
-ifeq ($(BR2_PACKAGE_BUSYBOX),y)
-NCURSES_DEPENDENCIES += busybox
-endif
 
 ifeq ($(BR2_STATIC_LIBS),y)
 NCURSES_CONF_OPTS += --without-shared --with-normal
@@ -51,18 +96,24 @@ endif
 
 NCURSES_TERMINFO_FILES = \
 	a/ansi \
+	d/dumb \
 	l/linux \
 	p/putty \
+	p/putty-256color \
 	p/putty-vt100 \
 	s/screen \
+	s/screen-256color \
 	v/vt100 \
 	v/vt100-putty \
 	v/vt102 \
 	v/vt200 \
 	v/vt220 \
 	x/xterm \
+	x/xterm+256color \
+	x/xterm-256color \
 	x/xterm-color \
 	x/xterm-xfree86 \
+	$(call qstrip,$(BR2_PACKAGE_NCURSES_ADDITIONAL_TERMINFO))
 
 ifeq ($(BR2_PACKAGE_NCURSES_WCHAR),y)
 NCURSES_CONF_OPTS += --enable-widec
@@ -99,17 +150,10 @@ NCURSES_LINK_STAGING_LIBS = \
 NCURSES_LINK_STAGING_PC = $(call NCURSES_LINK_PC)
 
 NCURSES_CONF_OPTS += --enable-ext-colors
-NCURSES_ABI_VERSION = 6
-NCURSES_TERMINFO_FILES += \
-	p/putty-256color \
-	x/xterm+256color \
-	x/xterm-256color
 
 NCURSES_POST_INSTALL_STAGING_HOOKS += NCURSES_LINK_STAGING_LIBS
 NCURSES_POST_INSTALL_STAGING_HOOKS += NCURSES_LINK_STAGING_PC
 
-else # BR2_PACKAGE_NCURSES_WCHAR
-NCURSES_ABI_VERSION = 5
 endif # BR2_PACKAGE_NCURSES_WCHAR
 
 ifneq ($(BR2_ENABLE_DEBUG),y)
@@ -150,6 +194,9 @@ define HOST_NCURSES_BUILD_CMDS
 	$(HOST_MAKE_ENV) $(MAKE) -C $(@D)/progs tic
 endef
 
+HOST_NCURSES_CONF_ENV = \
+	ac_cv_path_LDCONFIG=""
+
 HOST_NCURSES_CONF_OPTS = \
 	--with-shared \
 	--without-gpm \
@@ -157,6 +204,8 @@ HOST_NCURSES_CONF_OPTS = \
 	--without-cxx \
 	--without-cxx-binding \
 	--without-ada \
+	--with-default-terminfo-dir=/usr/share/terminfo \
+	--disable-db-install \
 	--without-normal
 
 $(eval $(autotools-package))
