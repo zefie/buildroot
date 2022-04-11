@@ -1720,6 +1720,7 @@ endmenu
 menu "Shell and utilities"
 comment "Shells"
 	source "package/bash/Config.in"
+	source "package/bash-completion/Config.in"
 	source "package/dash/Config.in"
 	source "package/mksh/Config.in"
 	source "package/zsh/Config.in"
