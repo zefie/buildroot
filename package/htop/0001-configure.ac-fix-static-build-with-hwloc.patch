@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<title>0001-configure.ac-fix-static-build-with-hwloc.patch « htop « package - buildroot - Buildroot: Making Embedded Linux easy</title>
+<meta name='generator' content='cgit v1.2.3'/>
+<meta name='robots' content='index, nofollow'/>
+<link rel='stylesheet' type='text/css' href='/cgit.css'/>
+<link rel='shortcut icon' href='/favicon.ico'/>
+<link rel='alternate' title='Atom feed' href='https://git.busybox.net/buildroot/atom/package/htop/0001-configure.ac-fix-static-build-with-hwloc.patch?h=master' type='application/atom+xml'/>
+<link rel='vcs-git' href='git://git.busybox.net/buildroot' title='buildroot Git repository'/>
+<link rel='vcs-git' href='https://git.busybox.net/buildroot' title='buildroot Git repository'/>
+</head>
+<body>
+<div id='cgit'><table id='header'>
+<tr>
+<td class='logo' rowspan='2'><a href='/'><img src='/busybox1.png' alt='cgit logo'/></a></td>
+<td class='main'><a href='/'>index</a> : <a title='buildroot' href='/buildroot/'>buildroot</a></td><td class='form'><form method='get'>
+<select name='h' onchange='this.form.submit();'>
+<option value='2012.11.x'>2012.11.x</option>
+<option value='2013.08.x'>2013.08.x</option>
+<option value='2015.08.x'>2015.08.x</option>
+<option value='2015.11.x'>2015.11.x</option>
+<option value='2016.08.x'>2016.08.x</option>
+<option value='2016.11.x'>2016.11.x</option>
+<option value='2017.02.x'>2017.02.x</option>
+<option value='2017.05.x'>2017.05.x</option>
+<option value='2017.08.x'>2017.08.x</option>
+<option value='2017.11.x'>2017.11.x</option>
+<option value='2018.02.x'>2018.02.x</option>
+<option value='2018.05.x'>2018.05.x</option>
+<option value='2018.08.x'>2018.08.x</option>
+<option value='2018.11.x'>2018.11.x</option>
+<option value='2019.02.x'>2019.02.x</option>
+<option value='2019.05.x'>2019.05.x</option>
+<option value='2019.08.x'>2019.08.x</option>
+<option value='2019.11.x'>2019.11.x</option>
+<option value='2020.02.x'>2020.02.x</option>
+<option value='2020.05.x'>2020.05.x</option>
+<option value='2020.08.x'>2020.08.x</option>
+<option value='2020.11.x'>2020.11.x</option>
+<option value='2021.02.x'>2021.02.x</option>
+<option value='2021.05.x'>2021.05.x</option>
+<option value='2021.08.x'>2021.08.x</option>
+<option value='2021.11.x'>2021.11.x</option>
+<option value='2022.02.x'>2022.02.x</option>
+<option value='master' selected='selected'>master</option>
+<option value='next'>next</option>
+</select> <input type='submit' value='switch'/></form></td></tr>
+<tr><td class='sub'>Buildroot: Making Embedded Linux easy</td><td class='sub right'>jacmet</td></tr></table>
+<table class='tabs'><tr><td>
+<a href='/buildroot/about/'>about</a><a href='/buildroot/'>summary</a><a href='/buildroot/refs/'>refs</a><a href='/buildroot/log/package/htop/0001-configure.ac-fix-static-build-with-hwloc.patch'>log</a><a class='active' href='/buildroot/tree/package/htop/0001-configure.ac-fix-static-build-with-hwloc.patch'>tree</a><a href='/buildroot/commit/package/htop/0001-configure.ac-fix-static-build-with-hwloc.patch'>commit</a><a href='/buildroot/diff/package/htop/0001-configure.ac-fix-static-build-with-hwloc.patch'>diff</a></td><td class='form'><form class='right' method='get' action='/buildroot/log/package/htop/0001-configure.ac-fix-static-build-with-hwloc.patch'>
+<select name='qt'>
+<option value='grep'>log msg</option>
+<option value='author'>author</option>
+<option value='committer'>committer</option>
+<option value='range'>range</option>
+</select>
+<input class='txt' type='search' size='10' name='q' value=''/>
+<input type='submit' value='search'/>
+</form>
+</td></tr></table>
+<div class='path'>path: <a href='/buildroot/tree/'>root</a>/<a href='/buildroot/tree/package'>package</a>/<a href='/buildroot/tree/package/htop'>htop</a>/<a href='/buildroot/tree/package/htop/0001-configure.ac-fix-static-build-with-hwloc.patch'>0001-configure.ac-fix-static-build-with-hwloc.patch</a></div><div class='content'>blob: 0ac79766c5b133638d396c123dd452b403daea59 (<a href='/buildroot/plain/package/htop/0001-configure.ac-fix-static-build-with-hwloc.patch'>plain</a>)
+<table summary='blob content' class='blob'>
+<tr><td class='linenumbers'><pre><a id='n1' href='#n1'>1</a>
+<a id='n2' href='#n2'>2</a>
+<a id='n3' href='#n3'>3</a>
+<a id='n4' href='#n4'>4</a>
+<a id='n5' href='#n5'>5</a>
+<a id='n6' href='#n6'>6</a>
+<a id='n7' href='#n7'>7</a>
+<a id='n8' href='#n8'>8</a>
+<a id='n9' href='#n9'>9</a>
+<a id='n10' href='#n10'>10</a>
+<a id='n11' href='#n11'>11</a>
+<a id='n12' href='#n12'>12</a>
+<a id='n13' href='#n13'>13</a>
+<a id='n14' href='#n14'>14</a>
+<a id='n15' href='#n15'>15</a>
+<a id='n16' href='#n16'>16</a>
+<a id='n17' href='#n17'>17</a>
+<a id='n18' href='#n18'>18</a>
+<a id='n19' href='#n19'>19</a>
+<a id='n20' href='#n20'>20</a>
+<a id='n21' href='#n21'>21</a>
+<a id='n22' href='#n22'>22</a>
+<a id='n23' href='#n23'>23</a>
+<a id='n24' href='#n24'>24</a>
+<a id='n25' href='#n25'>25</a>
+<a id='n26' href='#n26'>26</a>
+<a id='n27' href='#n27'>27</a>
+<a id='n28' href='#n28'>28</a>
+<a id='n29' href='#n29'>29</a>
+<a id='n30' href='#n30'>30</a>
+<a id='n31' href='#n31'>31</a>
+<a id='n32' href='#n32'>32</a>
+<a id='n33' href='#n33'>33</a>
+<a id='n34' href='#n34'>34</a>
+<a id='n35' href='#n35'>35</a>
+<a id='n36' href='#n36'>36</a>
+<a id='n37' href='#n37'>37</a>
+<a id='n38' href='#n38'>38</a>
+<a id='n39' href='#n39'>39</a>
+<a id='n40' href='#n40'>40</a>
+<a id='n41' href='#n41'>41</a>
+<a id='n42' href='#n42'>42</a>
+<a id='n43' href='#n43'>43</a>
+<a id='n44' href='#n44'>44</a>
+<a id='n45' href='#n45'>45</a>
+<a id='n46' href='#n46'>46</a>
+<a id='n47' href='#n47'>47</a>
+<a id='n48' href='#n48'>48</a>
+<a id='n49' href='#n49'>49</a>
+<a id='n50' href='#n50'>50</a>
+<a id='n51' href='#n51'>51</a>
+<a id='n52' href='#n52'>52</a>
+<a id='n53' href='#n53'>53</a>
+<a id='n54' href='#n54'>54</a>
+</pre></td>
+<td class='lines'><pre><code>From 4ccad4604586c921b4ad831b254496c2cdece9fc Mon Sep 17 00:00:00 2001
+From: Fabrice Fontaine &lt;fontaine.fabrice@gmail.com&gt;
+Date: Sat, 2 Apr 2022 17:27:01 +0200
+Subject: [PATCH] configure.ac: fix static build with hwloc
+
+Retrieve hwloc dependencies through pkg-config to avoid the following
+static build failure:
+
+checking for hwloc_get_proc_cpubind in -lhwloc... no
+configure: error: can not find required library libhwloc
+
+This build failure is raised because without pkg-config, hwloc
+dependencies such as libxml2 are not retrieved:
+
+configure:8999: checking for hwloc_get_proc_cpubind in -lhwloc
+configure:9022: /home/autobuild/autobuild/instance-0/output-1/host/bin/powerpc-buildroot-linux-uclibc-gcc -o conftest -D_GNU_SOURCE -I/home/autobuild/autobuild/instance-0/output-1/host/powerpc-buildroot-linux-uclibc/sysroot/usr/bin/../../usr/include -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64  -Og -g0  -static -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64  -static conftest.c -lhwloc  -llzma -L/home/autobuild/autobuild/instance-0/output-1/host/powerpc-buildroot-linux-uclibc/sysroot/usr/bin/../../usr/lib -lncurses -lm   &gt;&amp;5
+/home/autobuild/autobuild/instance-0/output-1/host/lib/gcc/powerpc-buildroot-linux-uclibc/10.3.0/../../../../powerpc-buildroot-linux-uclibc/bin/ld: /home/autobuild/autobuild/instance-0/output-1/host/powerpc-buildroot-linux-uclibc/sysroot/usr/bin/../../usr/lib/libhwloc.a(topology-xml-libxml.o): in function `hwloc_libxml_free_buffer':
+topology-xml-libxml.c:(.text+0x6a): undefined reference to `xmlFree'
+
+Fixes:
+ - http://autobuild.buildroot.org/results/5d815ec08c580005a863df6ac9ac29deff7d4128
+
+Signed-off-by: Fabrice Fontaine &lt;fontaine.fabrice@gmail.com&gt;
+[Retrieved from:
+https://github.com/htop-dev/htop/commit/4ccad4604586c921b4ad831b254496c2cdece9fc]
+---
+ configure.ac | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 4ecac1ecf..6bb7eb69f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -456,8 +456,18 @@ case "$enable_hwloc" in
+    no)
+       ;;
+    yes)
+-      AC_CHECK_LIB([hwloc], [hwloc_get_proc_cpubind], [], [AC_MSG_ERROR([can not find required library libhwloc])])
+-      AC_CHECK_HEADERS([hwloc.h], [], [AC_MSG_ERROR([can not find require header file hwloc.h])])
++      m4_ifdef([PKG_PROG_PKG_CONFIG], [
++         PKG_PROG_PKG_CONFIG()
++         PKG_CHECK_MODULES(HWLOC, hwloc, [
++               CFLAGS="$CFLAGS $HWLOC_CFLAGS" LIBS="$LIBS $HWLOC_LIBS"
++            ], [
++               AC_CHECK_LIB([hwloc], [hwloc_get_proc_cpubind], [], [AC_MSG_ERROR([can not find required library libhwloc])])
++               AC_CHECK_HEADERS([hwloc.h], [], [AC_MSG_ERROR([can not find require header file hwloc.h])])
++            ])
++         ], [
++            AC_CHECK_LIB([hwloc], [hwloc_get_proc_cpubind], [], [AC_MSG_ERROR([can not find required library libhwloc])])
++            AC_CHECK_HEADERS([hwloc.h], [], [AC_MSG_ERROR([can not find require header file hwloc.h])])
++         ])
+       ;;
+    *)
+       AC_MSG_ERROR([bad value '$enable_hwloc' for --enable-hwloc])
+</code></pre></td></tr></table>
+</div> <!-- class=content -->
+<div class='footer'>generated by <a href='https://git.zx2c4.com/cgit/about/'>cgit v1.2.3</a> (<a href='https://git-scm.com/'>git 2.25.1</a>) at 2022-04-11 03:03:09 +0000</div>
+</div> <!-- id=cgit -->
+</body>
+</html>
