@@ -10,12 +10,11 @@ COMPRESS=(
 	"usr/lib/libpanel.so.6.1"
 	"usr/lib/libssl.so.1.1"
 	"usr/lib/libcrypto.so.1.1"
-	"usr/lib/libz.so.1.2.8"
+	"usr/lib/libz.so.1.2.12"
 	"usr/lib/liblz4.so.1.3.1"
 	"usr/lib/engines-1.1/afalg.so"
 	"usr/lib/engines-1.1/capi.so"
 	"usr/lib/engines-1.1/padlock.so"
-	"usr/lib/openvpn/plugins/openvpn-plugin-down-root.so"
 
 	"bin/bash"
 	"usr/bin/nano"

@@ -1,3 +1,23 @@
+Note for TMOHS1:
+  - this is for building executables that run on the existing firmware
+  - don't try to boot any rootfs or kernel generated from this tool
+
+Setup:
+  - make tmohs1_defconfig
+
+Build:
+  - make
+  - ./maketar.sh
+
+Install on device:
+  - remount root rw (mount -o remount,rw /)
+  - run ftpd (tcpsvd -vE 0.0.0.0 21 /sbin/ftpd -w -vv /tmp)
+  - upload files.tgz to / via FTP
+  - Ctrl-C on the ftpd to close it
+  - Unarchive (tar -zxvpf /tmp/files.tgz -C /)
+
+-----------
+
 Buildroot is a simple, efficient and easy-to-use tool to generate embedded
 Linux systems through cross-compilation.
 
