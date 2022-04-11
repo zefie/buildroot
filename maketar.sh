@@ -17,7 +17,7 @@ COMPRESSABLE=(
 	"./usr/lib/engines-1.1/padlock.so"
 	"./usr/lib/openvpn/plugins/openvpn-plugin-down-root.so"
 	"./usr/lib/libcurl.so.4.7.0"
-
+	"./usr/lib/libpopt.so.0.0.1"
 	"./usr/libexec/sftp-server"
 	"./usr/libexec/ssh-keysign"
 	"./usr/libexec/ssh-pkcs11-helper"
@@ -28,6 +28,9 @@ COMPRESSABLE=(
 	"./usr/bin/ssh"
 	"./usr/bin/ssh-keygen"
 	"./usr/sbin/sshd"
+
+	"./usr/bin/rsync"
+	"./usr/bin/rsync-ssl"
 
 	"./bin/bash"
 	"./usr/bin/curl"
@@ -48,7 +51,7 @@ BASH_COMPLETIONS=(
 	$(echo ./usr/share/bash-completion/completions/{insmod,modinfo,rmmod})
 	$(echo ./usr/share/bash-completion/completions/{htop,kill,killall})
 	$(echo ./usr/share/bash-completion/completions/{ping,ping6,arping,tcpdump})
-	$(echo ./usr/share/bash-completion/completions/{nc,route,hostname})
+	$(echo ./usr/share/bash-completion/completions/{nc,route,hostname,rsync})
 	$(echo ./usr/share/bash-completion/completions/{openssl,curl})
 	$(echo ./usr/share/bash-completion/completions/ssh{-add,-keygen,})
 	$(echo ./usr/share/bash-completion/completions/iw{list,priv,config,spy})
@@ -85,6 +88,8 @@ INCLUDE=(
 	"./usr/lib/liblz4.so"
 	"./usr/lib/libcurl.so.4"
 	"./usr/lib/libcurl.so"
+	"./usr/lib/libpopt.so.0"
+	"./usr/lib/libpopt.so"
 	"./usr/bin/lz4cat"
 	"./var/empty"
 
