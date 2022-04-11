@@ -107,9 +107,13 @@ SED_PATCHES=(
 )
 
 cd output/target || exit 0
+
 rm -rf ../tar_staging
 mkdir ../tar_staging || exit 0
-cd ../tar_staging
+cd ../tar_staging || exit 0
+
+echo " * Extracting from rootfs.tar (w/ fakeroot) ..."
+fakeroot -- tar --strip-components=1 -xpf ../images/rootfs.tar "${INCLUDE[@]}"
 
 ## disabled due to favoring RAM over NAND space
 #for f in "${COMPRESSABLE[@]}"; do
@@ -118,9 +122,6 @@ cd ../tar_staging
 #		upx --android-shlib --ultra-brute "${f}"
 #	fi
 #done
-
-echo " * Extracting from rootfs.tar (w/ fakeroot) ..."
-fakeroot -- tar --strip-components=1 -xpf ../images/rootfs.tar "${INCLUDE[@]}"
 
 if [ ${#TEMP_DIRS[@]} -gt 0 ]; then
 	echo " * Temporarly creating directory ${d} ..."
