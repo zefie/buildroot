@@ -11,7 +11,8 @@ COMPRESSABLE=(
 	"./usr/lib/libssl.so.1.1"
 	"./usr/lib/libcrypto.so.1.1"
 	"./usr/lib/libz.so.1.2.12"
-	"./usr/lib/liblz4.so.1.3.1"
+	"./usr/lib/liblz4.so.1.7.1"
+	"./lib/libatomic.so.1.1.0"
 	"./usr/lib/engines-1.1/afalg.so"
 	"./usr/lib/engines-1.1/capi.so"
 	"./usr/lib/engines-1.1/padlock.so"
@@ -45,8 +46,6 @@ COMPRESSABLE=(
 	"./usr/bin/htop"
 	"./usr/bin/tmux"
 	"./usr/bin/openssl"
-	"./usr/bin/lz4"
-	"./usr/bin/lz4c"
 
 	"./usr/sbin/openvpn"
 )
@@ -57,7 +56,7 @@ BASH_COMPLETIONS=(
 	"ether-wake" "find" "gdb" "gzip" "hd" "hostname"
 	"htop" "id" "ifdown" "ifup" "insmod" "ip" "ipcalc"
 	"iptables" "iwconfig" "iwlist" "iwpriv" "iwspy"
-	"kill" "killall" "lpq" "lpr" "lsusb" "lz4" "lz4c"
+	"kill" "killall" "lpq" "lpr" "lsusb"
 	"lzma" "lzop" "man" "mktemp" "modinfo" "modprobe"
 	"nc" "nslookup" "openssl" "passwd" "patch" "perl"
 	"pgrep" "pidof" "ping" "ping6" "pkill" "printenv"
@@ -97,6 +96,8 @@ INCLUDE=(
 	"./usr/lib/libpanel.so.6"
 	"./usr/lib/libz.so.1"
 	"./usr/lib/libz.so"
+	"./lib/libatomic.so.1"
+	"./lib/libatomic.so"
 	"./usr/lib/libcrypto.so"
 	"./usr/lib/libssl.so"
 	"./usr/lib/liblz4.so.1"
@@ -105,7 +106,6 @@ INCLUDE=(
 	"./usr/lib/libcurl.so"
 	"./usr/lib/libpopt.so.0"
 	"./usr/lib/libpopt.so"
-	"./usr/bin/lz4cat"
 	"./var/empty"
 
 	"./etc/profile.d"
@@ -128,12 +128,15 @@ SED_PATCHES=(
 
 cd output/target || exit 0
 
-rm -rf ../tar_staging
+if [ -d ../tar_staging ]; then
+	echo " * Removing old tar_staging directory ..."
+	rm -rf ../tar_staging || exit 0
+fi
 mkdir ../tar_staging || exit 0
 cd ../tar_staging || exit 0
 
 echo " * Extracting from rootfs.tar (w/ fakeroot) ..."
-fakeroot -- tar --strip-components=1 -xpf ../images/rootfs.tar "${INCLUDE[@]}"
+fakeroot -- tar --strip-components=1 -xpf ../images/rootfs.tar "${INCLUDE[@]}" || exit 0
 
 ## disabled due to favoring RAM over NAND space
 #for f in "${COMPRESSABLE[@]}"; do
@@ -166,7 +169,7 @@ if [ ${#SED_PATCHES[@]} -gt 0 ]; then
 fi
 
 echo " * Packaging files info files.tgz (w/ fakeroot) ..."
-fakeroot -- tar zcpf ../../files.tgz "${INCLUDE[@]}"
+fakeroot -- tar zcpf ../../files.tgz "${INCLUDE[@]}" || exit 0
 
 
 if [ ${#TEMP_DIRS[@]} -gt 0 ]; then
