@@ -1,6 +1,7 @@
 Note for TMOHS1:
   - this is for building executables that run on the existing firmware
   - don't try to boot any rootfs or kernel generated from this tool
+  - only tested on my device, not responsible for damage to devices
 
 Setup:
   - make tmohs1_defconfig
@@ -15,6 +16,15 @@ Install on device:
   - upload files.tgz to / via FTP
   - Ctrl-C on the ftpd to close it
   - Unarchive (tar -zxvpf /tmp/files.tgz -C /)
+
+Enable SSH:
+  - ln -s /etc/init.d/S50dropbear /etc/rc5.d/S50dropbear
+
+Remove from device:
+  - upload files.tgz to / via FTP (see above)
+  - Run on device: for f in $(tar -ztf /tmp/files.tgz); do rm -rfv "/${f}"; done
+  - Relink libssl.so to older libssl.so.1.0.0: cd /usr/lib && ln -s libssl.so.1.0.0 libssl.so
+  - Reboot device
 
 -----------
 
