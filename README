@@ -17,8 +17,10 @@ Install on device:
   - Ctrl-C on the ftpd to close it
   - Unarchive (tar -zxvpf /tmp/files.tgz -C /)
 
-Enable SSH:
-  - ln -s /etc/init.d/S50dropbear /etc/rc5.d/S50dropbear
+Enable OpenSSH:
+  - adduser -D sshd
+  - ln -s /etc/init.d/S50sshd /etc/rc5.d/S50sshd
+  - /etc/init.d/S50sshd start
 
 Remove from device:
   - upload files.tgz to / via FTP (see above)
