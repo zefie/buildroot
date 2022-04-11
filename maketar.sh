@@ -1,5 +1,5 @@
 #!/bin/bash
-COMPRESS=(
+COMPRESSABLE=(
 	"usr/lib/libevent-2.1.so.7.0.1"
 	"usr/lib/libevent_core-2.1.so.7.0.1"
 	"usr/lib/libevent_extra-2.1.so.7.0.1"
@@ -16,8 +16,10 @@ COMPRESS=(
 	"usr/lib/engines-1.1/capi.so"
 	"usr/lib/engines-1.1/padlock.so"
 	"usr/lib/openvpn/plugins/openvpn-plugin-down-root.so"
+	"usr/lib/libcurl.so.4.7.0"
 
 	"bin/bash"
+	"usr/bin/curl"
 	"usr/bin/nano"
 	"usr/bin/htop"
 	"usr/bin/tmux"
@@ -29,8 +31,26 @@ COMPRESS=(
 	"usr/sbin/openvpn"
 )
 
+BASH_COMPLETIONS=(
+	$(echo usr/share/bash-completion/completions/lz{ma,op,4,4c})
+	$(echo usr/share/bash-completion/completions/{bzip2,gzip,xz,tar})
+	$(echo usr/share/bash-completion/completions/{strings,passwd,pgrep})
+	$(echo usr/share/bash-completion/completions/{insmod,modinfo,rmmod})
+	$(echo usr/share/bash-completion/completions/{htop,kill,killall})
+	$(echo usr/share/bash-completion/completions/{ping,ping6,arping,tcpdump,route})
+	$(echo usr/share/bash-completion/completions/{nc,route,hostname})
+	$(echo usr/share/bash-completion/completions/{openssl,curl})
+	$(echo usr/share/bash-completion/completions/iw{list,priv,config,spy})
+	$(echo usr/share/bash-completion/completions/ip{tables,calc,})
+	$(echo usr/share/bash-completion/completions/if{up,down})
+)
+
+TEMP_DIRS=(
+	"data/etc/dropbear"
+)
+
 INCLUDE=(
-	"${COMPRESS[@]}"
+	"${COMPRESSABLE[@]}"
 	"usr/lib/libcurses.so"
 	"usr/lib/libevent-2.1.so.7"
 	"usr/lib/libevent_core-2.1.so.7"
@@ -54,6 +74,8 @@ INCLUDE=(
 	"usr/lib/libssl.so"
 	"usr/lib/liblz4.so.1"
 	"usr/lib/liblz4.so"
+	"usr/lib/libcurl.so.4"
+	"usr/lib/libcurl.so"
 	"usr/bin/lz4cat"
 	"usr/bin/dropbearkey"
 	"usr/bin/dropbearconvert"
@@ -65,23 +87,37 @@ INCLUDE=(
 	"usr/lib/locale"
 	"usr/lib/terminfo"
 	"usr/share/terminfo"
-	"usr/share/bash-completion"
 	"etc/dropbear"
+
+	"${BASH_COMPLETIONS[@]}"
 
 	"etc/init.d/S50dropbear"
 	"etc/init.d/S60openvpn"
+
+	"${TEMP_DIRS[@]}"
 )
 
 cd output/target || exit 0
 
 ## disabled due to favoring RAM over NAND space
-#for f in "${COMPRESS[@]}"; do
+#for f in "${COMPRESSABLE[@]}"; do
 #	if [ -f "${f}" ]; then
 #		upx -d "${f}"
 #		upx --android-shlib --ultra-brute "${f}"
 #	fi
 #done
 
+if [ ${#TEMP_DIRS[@]} -gt 0 ]; then
+	for d in ${TEMP_DIRS[@]}; do
+		mkdir -p "${d}";
+	done
+fi
+
 fakeroot -- chown root:root -R "${INCLUDE[@]}" 
 fakeroot -- tar zcvf ../../files.tgz "${INCLUDE[@]}"
 
+if [ ${#TEMP_DIRS[@]} -gt 0 ]; then
+	for d in ${TEMP_DIRS[@]}; do
+		rm -rf "${d}";
+	done
+fi
