@@ -7,7 +7,7 @@ Note for TMOHS1:
     - /usr/sbin/wpa_supplicant
     - /usr/sbin/lightttpd
     - /usr/sbin/miniupnpd
-  - does not overwrite any files (except symlink to libssl.so)
+  - does not overwrite any files (except some symlinks (see "Remove from device" below))
   - updating these may be possible but the goal of this project
     is to not overwrite system files, so that uninstallation is possible
 
@@ -33,7 +33,9 @@ Enable OpenSSH:
 Remove from device:
   - upload files.tgz to / via FTP (see above)
   - Run on device: for f in $(tar -ztf /tmp/files.tgz); do rm -rfv "/${f}"; done
-  - Relink libssl.so to older libssl.so.1.0.0: cd /usr/lib && ln -s libssl.so.1.0.0 libssl.so
+  - Restore symlinks to original outdated libraries:
+    - cd /usr/lib && ln -s libssl.so.1.0.0 libssl.so
+    - cd /usr/lib && ln -s libpcap.so.1.6.2 libpcap.so.1
   - Reboot device
 
 -----------

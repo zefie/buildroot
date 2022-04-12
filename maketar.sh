@@ -14,12 +14,14 @@ COMPRESSABLE=(
 	"./usr/lib/libz.so.1.2.12"
 	"./usr/lib/liblz4.so.1.7.1"
 	"./lib/libatomic.so.1.1.0"
+	"./usr/lib/libstdc++.so.6.0.21"
 	"./usr/lib/engines-1.1/afalg.so"
 	"./usr/lib/engines-1.1/capi.so"
 	"./usr/lib/engines-1.1/padlock.so"
 	"./usr/lib/openvpn/plugins/openvpn-plugin-down-root.so"
 	"./usr/lib/libcurl.so.4.7.0"
 	"./usr/lib/libpopt.so.0.0.1"
+	"./usr/lib/liblinear.so.5"
 	"./usr/libexec/sftp-server"
 	"./usr/libexec/ssh-keysign"
 	"./usr/libexec/ssh-pkcs11-helper"
@@ -37,6 +39,12 @@ COMPRESSABLE=(
 	"./usr/sbin/nandtest"
 	"./usr/sbin/nandwrite"
 	"./usr/sbin/mkfs.ubifs"
+	"./usr/bin/nmap"
+
+	"./usr/lib/libpcap.so.1.10.1"
+
+	"./usr/bin/ddrescue"
+	"./usr/bin/ddrescuelog"
 
 	"./usr/bin/rsync"
 	"./usr/bin/rsync-ssl"
@@ -57,9 +65,9 @@ BASH_COMPLETIONS=(
 	"ether-wake" "find" "gdb" "gzip" "hd" "hostname"
 	"htop" "id" "ifdown" "ifup" "insmod" "ip" "ipcalc"
 	"iptables" "iwconfig" "iwlist" "iwpriv" "iwspy"
-	"kill" "killall" "lpq" "lpr" "lsusb"
-	"lzma" "lzop" "man" "mktemp" "modinfo" "modprobe"
-	"nc" "nslookup" "openssl" "passwd" "patch" "perl"
+	"kill" "killall" "lpq" "lpr" "lsusb" "lzma" "lzop"
+	"man" "mktemp" "modinfo" "modprobe" "nc" "nmap"
+	"nslookup" "openssl" "passwd" "patch" "perl"
 	"pgrep" "pidof" "ping" "ping6" "pkill" "printenv"
 	"pwd" "rmmod" "route" "rpm" "rsync" "scp" "sh"
 	"ssh" "ssh-add" "ssh-copy-id" "ssh-keygen" "strings"
@@ -75,6 +83,21 @@ done
 
 
 TEMP_DIRS=()
+
+CUSTOM_FILE_PATH="$(dirname "$(realpath "${0}")")/custom_files"
+CUSTOM_FILES=(
+	"./etc/inittab" "root:root" "644"
+)
+
+CUSTOM_FILES_INCLUDE=()
+
+for f in ${CUSTOM_FILES[@]}; do
+	if [ "${f:0:1}" == "." ]; then
+		if [ -f "${CUSTOM_FILE_PATH}/${f}" ]; then
+			CUSTOM_FILES_INCLUDE+=("${f}")
+		fi
+	fi
+done
 
 INCLUDE=(
 	"${COMPRESSABLE[@]}"
@@ -99,6 +122,10 @@ INCLUDE=(
 	"./usr/lib/libpanel.so.6"
 	"./usr/lib/libz.so.1"
 	"./usr/lib/libz.so"
+	"./usr/lib/libpcap.so"
+	"./usr/lib/libpcap.so.1"
+	"./usr/lib/libstdc++.so.6"
+	"./usr/lib/libstdc++.so"
 	"./lib/libatomic.so.1"
 	"./lib/libatomic.so"
 	"./usr/lib/libcrypto.so"
@@ -109,7 +136,9 @@ INCLUDE=(
 	"./usr/lib/libcurl.so"
 	"./usr/lib/libpopt.so.0"
 	"./usr/lib/libpopt.so"
+	"./usr/lib/liblinear.so"
 	"./var/empty"
+	"./usr/share/nmap"
 
 	"./etc/profile.d"
 	"./usr/lib/locale"
@@ -123,6 +152,7 @@ INCLUDE=(
 	"./etc/init.d/S60openvpn"
 
 	"${TEMP_DIRS[@]}"
+	"${CUSTOM_FILES_INCLUDE[@]}"
 )
 
 SED_PATCHES=(
@@ -165,6 +195,22 @@ if [ ${#SED_PATCHES[@]} -gt 0 ]; then
 		else
 			if [ "${SED_PATCHES[${f}]:0,1}" == "." ]; then
 				echo "No such file: ${SED_PATCHES[${f}]} ..."
+			fi
+			continue;
+		fi
+	done
+fi
+if [ ${#CUSTOM_FILES[@]} -gt 0 ]; then
+	for f in $(seq 0 ${#CUSTOM_FILES[@]}); do
+		if [ -f "${CUSTOM_FILE_PATH}/${CUSTOM_FILES[${f}]}" ]; then
+			echo " * Inserting ${CUSTOM_FILES[${f}]} ..."
+			mkdir -p "$(dirname "${CUSTOM_FILES[${f}]}")"
+			fakeroot cp -r "${CUSTOM_FILE_PATH}/${CUSTOM_FILES[${f}]}" "${CUSTOM_FILES[${f}]}"
+			fakeroot chown -R "${CUSTOM_FILES[$((f+1))]}" "${CUSTOM_FILES[${f}]}"
+			fakeroot chmod -R "${CUSTOM_FILES[$((f+2))]}" "${CUSTOM_FILES[${f}]}"
+		else
+			if [ "${CUSTOM_FILES[${f}]:0,1}" == "." ]; then
+				echo "No such file: ${CUSTOM_FILES[${f}]} ..."
 			fi
 			continue;
 		fi
