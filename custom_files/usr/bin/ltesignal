@@ -1,0 +1,2 @@
+#!/bin/sh
+echo "LTE Status: $(cat /tmp/lte_rssi)dBm RSSI ($(cat /tmp/lte_snr)dB SnR) (Network: $(cat /tmp/lte_rsrp)dBm RSSI)"

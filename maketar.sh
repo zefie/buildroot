@@ -88,6 +88,7 @@ CUSTOM_FILE_PATH="$(dirname "$(realpath "${0}")")/custom_files"
 CUSTOM_FILES=(
 	"./etc/inittab" "root:root" "644"
 	"./usr/bin/speedtest" "root:root" "755"
+	"./usr/bin/ltesignal" "root:root" "755"
 )
 
 CUSTOM_FILES_INCLUDE=()
