@@ -87,6 +87,7 @@ TEMP_DIRS=()
 CUSTOM_FILE_PATH="$(dirname "$(realpath "${0}")")/custom_files"
 CUSTOM_FILES=(
 	"./etc/inittab" "root:root" "644"
+	"./usr/bin/speedtest" "root:root" "755"
 )
 
 CUSTOM_FILES_INCLUDE=()
@@ -99,7 +100,7 @@ for f in ${CUSTOM_FILES[@]}; do
 	fi
 done
 
-INCLUDE=(
+INCLUDE_BUILDROOT=(
 	"${COMPRESSABLE[@]}"
 	"./usr/lib/libcurses.so"
 	"./usr/lib/libevent-2.1.so.7"
@@ -139,6 +140,7 @@ INCLUDE=(
 	"./usr/lib/liblinear.so"
 	"./var/empty"
 	"./usr/share/nmap"
+	"./etc/ssl"
 
 	"./etc/profile.d"
 	"./usr/lib/locale"
@@ -150,7 +152,10 @@ INCLUDE=(
 
 	"./etc/init.d/S50sshd"
 	"./etc/init.d/S60openvpn"
+)
 
+INCLUDE_OUT=(
+	"${INCLUDE_BUILDROOT[@]}"
 	"${TEMP_DIRS[@]}"
 	"${CUSTOM_FILES_INCLUDE[@]}"
 )
@@ -218,7 +223,7 @@ if [ ${#CUSTOM_FILES[@]} -gt 0 ]; then
 fi
 
 echo " * Packaging files info files.tgz (w/ fakeroot) ..."
-fakeroot -- tar zcpf ../../files.tgz "${INCLUDE[@]}" || exit 0
+fakeroot -- tar zcpf ../../files.tgz "${INCLUDE_OUT[@]}" || exit 0
 
 
 if [ ${#TEMP_DIRS[@]} -gt 0 ]; then
