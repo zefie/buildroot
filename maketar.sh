@@ -142,6 +142,7 @@ INCLUDE_BUILDROOT=(
 	"./var/empty"
 	"./usr/share/nmap"
 	"./etc/ssl"
+	"./usr/share/ca-certificates"
 
 	"./etc/profile.d"
 	"./usr/lib/locale"
